@@ -30,13 +30,13 @@ def find_library():
     return os.path.join(cur_dir, "{}{}.{}".format(prefix, libname, suffix))
 
 
-lib = ffi.dlopen(find_library())
+_lib = ffi.dlopen(find_library())
 
 
 def checked_call(fn, err, *args):
     all_args = list(args) + [err]
     res = fn(*all_args)
-    msg = ffi.string(lib.rure_error_message(err))
+    msg = ffi.string(_lib.rure_error_message(err))
     if msg == 'no error':
         return res
     elif msg.startswith('Error parsing regex'):
