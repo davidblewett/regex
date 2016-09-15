@@ -16,7 +16,7 @@ setup(
                  'linear time matching on all inputs.'),
     license='MIT',
     keywords=['regex', 'rust', 'dfa', 'automata', 'data_structures'],
-    url='https://github.com/davidblewett/rure-python',
+    url='https://github.com/rust-lang-nursery/regex/tree/master/regex-capi',
     setup_requires=[
         'cffi>=1.7.0'],
     install_requires=['cffi>=1.7.0'],
