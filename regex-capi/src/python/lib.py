@@ -1,6 +1,8 @@
 import os
 import sys
-from ._ffi import ffi
+
+from rure._ffi import ffi
+from rure import exceptions
 
 
 RURE_FLAG_MULTI = 1 << 1
@@ -11,16 +13,6 @@ RURE_FLAG_UNICODE = 1 << 5
 RURE_DEFAULT_FLAGS = RURE_FLAG_UNICODE
 
 
-class RegexError(Exception):
-    pass
-
-
-class RegexSyntaxError(RegexError):
-    pass
-
-
-class CompiledTooBigError(RegexError):
-    pass
 
 
 def find_library():
@@ -48,8 +40,8 @@ def checked_call(fn, err, *args):
     if msg == 'no error':
         return res
     elif msg.startswith('Error parsing regex'):
-        raise RegexSyntaxError(msg)
+        raise exceptions.RegexSyntaxError(msg)
     elif msg.startswith('Compiled regex exceeds size limit'):
-        raise CompiledTooBigError(msg)
+        raise exceptions.CompiledTooBigError(msg)
     else:
         raise RegexError(msg)
