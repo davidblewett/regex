@@ -21,7 +21,6 @@ setup(
         'cffi>=1.7.0'],
     install_requires=['cffi>=1.7.0'],
     cffi_modules=['src/python/_build_ffi.py:ffi'],
-    tests_require=['pytest', 'psutil', 'decorator'],
     distclass=RustDistribution,
     cmdclass={
         'build_rust': build_rust_cmdclass([(cur_dir, 'rure')]),
