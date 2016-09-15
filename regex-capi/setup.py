@@ -8,7 +8,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
 
 setup(
     name='rure',
-    version='0.0.1',
+    version='0.1.1',
     author='David Blewett',
     author_email='david@dawninglight.net',
     description=('Python bindings for the Rust `regex` create. '
