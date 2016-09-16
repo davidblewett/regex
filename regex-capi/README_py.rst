@@ -15,37 +15,37 @@ API documentation: http://doc.rust-lang.org/regex/regex/index.html
 Examples
 --------
 
-This package presents 2 entry points to the regex engine: `Rure`,
+This package presents 2 entry points to the regex engine: ``Rure``,
 an OO wrapper of the underlying Rust API, and a drop-in replacement for the
-stdlib `re` module (`compile`, `search`, `match`, `findall`, `finditer`,
-`RegexObject` and `MatchObject`).
+stdlib ``re`` module (``compile``, ``search``, ``match``, ``findall``, ``finditer``,
+``RegexObject`` and ``MatchObject``).
 
-The `Rure` interface exposes the "pay for what you use" API, enabling
-you to request the minimum computation you need: does the text match (`is_match`),
-where does it match (`find`, `find_iter`), and where are the submatches
-(`captures`, `captures_iter`).
+The ``Rure`` interface exposes the "pay for what you use" API, enabling
+you to request the minimum computation you need: does the text match (``is_match``),
+where does it match (``find``, ``find_iter``), and where are the submatches
+(``captures``, ``captures_iter``).
 
-The drop-in replacement should be as simple as `import rure as re`,
+The drop-in replacement should be as simple as ``import rure as re``,
 and using the API as documented in the Python documentation
 ( https://docs.python.org/3/library/re.html , https://docs.python.org/2/library/re.html).
-The flags supported by `re` are automatically translated to those
-supported by `rure`.
+The flags supported by ``re`` are automatically translated to those
+supported by ``rure``.
 
 One important note regarding this shim: the Rust engine operates on
 byte offsets in the given search text, while Python operates on Unicode
 code points. The Rust engine guarantees returning offsets that correspond
-to valid UTF8 segments. By default, the  `MatchObject` that is returned by
-this library will decode the captured text. The offsets returned by `start`,
-`end`, and `span`, however, are byte offsets and not character offsets.
-Using them with the `string` attribute is safe, so you can do:
+to valid UTF8 segments. By default, the  ``MatchObject`` that is returned by
+this library will decode the captured text. The offsets returned by ``start``,
+``end``, and ``span``, however, are byte offsets and not character offsets.
+Using them with the ``string`` attribute is safe, so you can do:
 
 >>> email = u"tony@tiremove_thisger.net"
 >>> m = re.search(u"remove_this", email)
 >>> m.string[:m.start()] + m.string[m.end():].decode('utf8')
 u'tony@tiger.net'
 
-This package also includes an `is_match(pattern, string, flags=0)` function
-(and corresponding method on `RegexObject`), that only returns a boolean.
+This package also includes an ``is_match(pattern, string, flags=0)`` function
+(and corresponding method on ``RegexObject``), that only returns a boolean.
 
 
 Performance
