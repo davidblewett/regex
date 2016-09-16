@@ -176,14 +176,17 @@ class MatchObject(object):
             return groups[-1]
 
     @property
-    def lastgroup(self):
+    def lastgroup(self, decode=True):
         groups = [
             gname
             for gindex, gname in enumerate(self.re.capture_names())
             if gname is not None and self.captures[gindex] is not None
         ]
         if groups:
-            return groups[-1]
+            if decode:
+                return groups[-1].decode('utf8')
+            else:
+                return groups[-1]
 
     @property
     def captures(self):
@@ -197,9 +200,13 @@ class MatchObject(object):
 
     def group(self, *groups, **kwargs):
         default = kwargs.get('default', None)
+        decode = kwargs.get('decode', True)
         if not groups:
             start, end = self.captures[0].start, self.captures[0].end
-            return self.string[start:end]
+            if decode:
+                return self.string[start:end].decode('utf8')
+            else:
+                return self.string[start:end]
 
         capture_data = []
         for i in groups:
@@ -212,7 +219,11 @@ class MatchObject(object):
             if match is None:
                 capture_data.append(default)
             else:
-                capture_data.append(self.string[match.start:match.end])
+                data = self.string[match.start:match.end]
+                if decode:
+                    capture_data.append(data.decode('utf8'))
+                else:
+                    capture_data.append(data)
         return tuple(capture_data)
 
     def groups(self, default=None):
@@ -220,17 +231,21 @@ class MatchObject(object):
         return self.group(*[i for i in range(len(self.captures)) if i > 0],
                           default=default)
 
-    def groupdict(self, default=None):
+    def groupdict(self, default=None, decode=True):
         group_indices = sorted(self.re.groupindex.values())
         group_data = self.group(*[i for i in group_indices], default=default)
-        return {
-            g_name_index[0]: group_data[pos]
-            for pos, g_name_index in enumerate(
+        gdict = {}
+        for pos, g_name_index in enumerate(
                 sorted(self.re.groupindex.items(),
                        # Sort by value
-                       key=lambda x: x[1])
-            )
-        }
+                       key=lambda x: x[1])):
+            gname = g_name_index[0]
+            gval = group_data[pos]
+            if decode:
+                gdict[gname.decode('utf8')] = gval.decode('utf8')
+            else:
+                gdict[gname] = gval
+        return gdict
 
     def start(self, group=0):
         self._warn(u'start')
