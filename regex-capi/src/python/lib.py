@@ -113,6 +113,7 @@ class Rure(object):
         warnings.warn(B_WARN.format(self.__class__.__module__,
                                     self.__class__.__name__,
                                     mname),
+                      UnicodeWarning,
                       stacklevel=2)
 
     def capture_name_index(self, name):
