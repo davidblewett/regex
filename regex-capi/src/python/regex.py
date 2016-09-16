@@ -141,6 +141,8 @@ class RegexObject(object):
 
 class MatchObject(object):
 
+    offset_warning = u"This returns byte offsets; use with {}.{}::string"
+
     def __bool__(self):
         return True
 
@@ -153,6 +155,15 @@ class MatchObject(object):
         self.re = re
         self.string = string
         self._captures = captures
+
+    def _warn(self, mname):
+        warnings.warn(
+            self.offset_warning.format(
+                self.__class__.__module__,
+                self.__class__.__name__,
+                mname),
+            UnicodeWarning,
+            stacklevel=2)
 
     @property
     def lastindex(self):
@@ -222,16 +233,22 @@ class MatchObject(object):
         }
 
     def start(self, group=0):
+        self._warn(u'start')
+
         if self.captures[group] is None:
             return -1
         else:
             return self.captures[group].start
 
     def end(self, group=0):
+        self._warn(u'end')
+
         if self.captures[group] is None:
             return -1
         else:
             return self.captures[group].end
 
     def span(self, group=0):
+        self._warn(u'span')
+
         return (self.start(group), self.end(group))
