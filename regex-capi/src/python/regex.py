@@ -1,1 +1,1 @@
-from rure.lib import RURE_DEFAULT_FLAGS
+from rure import DEFAULT_FLAGS

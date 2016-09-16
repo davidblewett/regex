@@ -6,12 +6,13 @@ from rure._ffi import ffi
 from rure import exceptions
 
 
-RURE_FLAG_MULTI = 1 << 1
-RURE_FLAG_DOTNL = 1 << 2
-RURE_FLAG_SWAP_GREED = 1 << 3
-RURE_FLAG_SPACE = 1 << 4
-RURE_FLAG_UNICODE = 1 << 5
-RURE_DEFAULT_FLAGS = RURE_FLAG_UNICODE
+CASEI = 1 << 0
+MULTI = 1 << 1
+DOTNL = 1 << 2
+SWAP_GREED = 1 << 3
+SPACE = 1 << 4
+UNICODE = 1 << 5
+DEFAULT_FLAGS = UNICODE
 
 
 RureMatch = namedtuple("RureMatch", ("start", "end"))
@@ -65,7 +66,7 @@ class Rure(object):
     """
 
     def __init__(self, re, _pointer=None,
-                 flags=RURE_DEFAULT_FLAGS, **options):
+                 flags=DEFAULT_FLAGS, **options):
         """ Compiles a regular expression. Once compiled, it can be used
         repeatedly to search, split or replace text in a string.
 
