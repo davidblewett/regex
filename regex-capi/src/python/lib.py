@@ -51,7 +51,7 @@ def checked_call(fn, err, *args):
         raise exceptions.RegexError(msg)
 
 
-BYTE_WARN = u'Rure expects UTF8 byte strings: {}'
+B_WARN = u'Rure expects UTF8 byte strings: {}.{}::{}'
 
 
 class Rure(object):
@@ -89,7 +89,7 @@ class Rure(object):
                                              options['dfa_size_limit'])
 
         if not isinstance(re, bytes):
-            warnings.warn(BYTE_WARN.format('Rure'))
+            self._warn(u'__init__')
 
         if re:
             s = checked_call(
@@ -109,6 +109,12 @@ class Rure(object):
             rename=True
         )
 
+    def _warn(self, mname):
+        warnings.warn(B_WARN.format(self.__class__.__module__,
+                                    self.__class__.__name__,
+                                    mname),
+                      stacklevel=2)
+
     def capture_name_index(self, name):
         """ Returns the capture index for the name given.
         If no such named capturing group exists in re, then -1 is returned.
@@ -119,7 +125,7 @@ class Rure(object):
         corresponds to the entire match and is always unnamed.
         """
         if not isinstance(name, bytes):
-            warnings.warn(BYTE_WARN.format('Rure.capture_name_index'))
+            self._warn(u'capture_name_index')
 
         return _lib.rure_capture_name_index(self._ptr, name)
 
@@ -146,7 +152,7 @@ class Rure(object):
         work.
         """
         if not isinstance(haystack, bytes):
-            warnings.warn(BYTE_WARN.format('Rure.is_match'))
+            self._warn(u'is_match')
 
         return bool(_lib.rure_is_match(
             self._ptr,
@@ -164,17 +170,17 @@ class Rure(object):
         is_match.
         """
         if not isinstance(haystack, bytes):
-            warnings.warn(BYTE_WARN.format('Rure.find'))
+            self._warn(u'find')
 
         match = ffi.new('rure_match *')
-        _lib.rure_find(
+        if _lib.rure_find(
             self._ptr,
             haystack,
             len(haystack),
             start,
             match
-        )
-        return RureMatch(match.start, match.end)
+        ):
+            return RureMatch(match.start, match.end)
 
     def find_iter(self, haystack, start=0):
         """Returns the capture groups corresponding to the leftmost-first match
@@ -186,7 +192,7 @@ class Rure(object):
         match.
         """
         if not isinstance(haystack, bytes):
-            warnings.warn(BYTE_WARN.format('Rure.find_iter'))
+            self._warn(u'find_iter')
 
         hlen = len(haystack)
         find_iter = ffi.gc(_lib.rure_iter_new(self._ptr),
@@ -209,26 +215,24 @@ class Rure(object):
         match.
         """
         if not isinstance(haystack, bytes):
-            warnings.warn(BYTE_WARN.format('Rure.captures'))
+            self._warn(u'captures')
 
         hlen = len(haystack)
         captures = ffi.gc(_lib.rure_captures_new(self._ptr),
                           _lib.rure_captures_free)
         match = ffi.new('rure_match *')
-        if not _lib.rure_find_captures(
+        if _lib.rure_find_captures(
             self._ptr,
             haystack,
             hlen,
             start,
             captures
         ):
-            return
-
-        return self.capture_cls(*[
-            RureMatch(match.start, match.end)
-            for i in range(0, _lib.rure_captures_len(captures))
-            if _lib.rure_captures_at(captures, i, match)
-        ])
+            return self.capture_cls(*[
+                RureMatch(match.start, match.end)
+                for i in range(0, _lib.rure_captures_len(captures))
+                if _lib.rure_captures_at(captures, i, match)
+            ])
 
     def captures_iter(self, haystack, start=0):
         """Returns an iterator over all the non-overlapping capture groups
@@ -236,7 +240,7 @@ class Rure(object):
         except it yields information about submatches.
         """
         if not isinstance(haystack, bytes):
-            warnings.warn(BYTE_WARN.format('Rure.captures_iter'))
+            self._warn(u'captures_iter')
 
         hlen = len(haystack)
         captures = ffi.gc(_lib.rure_captures_new(self._ptr),
@@ -261,7 +265,7 @@ class Rure(object):
         the proper leftmost-first match.
         """
         if not isinstance(haystack, bytes):
-            warnings.warn(BYTE_WARN.format('Rure.shortest_match'))
+            self._warn(u'shortest_match')
 
         hlen = len(haystack)
         end = ffi.new('size_t *')
