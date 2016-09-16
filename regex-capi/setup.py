@@ -5,6 +5,8 @@ from rust_setuptools import (build_rust_cmdclass, build_install_lib_cmdclass,
                              RustDistribution)
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(cur_dir, 'README_py.rst')) as buf:
+    README = buf.read()
 
 setup(
     name='rure',
@@ -14,6 +16,7 @@ setup(
     description=('Python bindings for the Rust `regex` create. '
                  'This implementation uses finite automata and guarantees '
                  'linear time matching on all inputs.'),
+    long_description=README,
     license='MIT',
     keywords=['regex', 'rust', 'dfa', 'automata', 'data_structures'],
     url='https://github.com/rust-lang-nursery/regex/tree/master/regex-capi',
