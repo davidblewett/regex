@@ -94,9 +94,7 @@ class RegexObject(object):
         if isinstance(string, bytes):
             self._warn(u'match')
 
-        match = self.search(string, pos, endpos)
-        if match and match.start == 0:
-            return match
+        return self.search(ur'\A' + string, pos, endpos)
 
     def split(self, string, maxsplit=0):
         if isinstance(string, bytes):
