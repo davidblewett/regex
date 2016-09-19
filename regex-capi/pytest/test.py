@@ -13,9 +13,9 @@ DEBUG = os.getenv('DEBUG', False)
 
 def test_is_match():
     passed = True
-    haystack = u'snowman: \u2603'
+    haystack = "snowman: \xE2\x98\x83"
 
-    re = Rure(u"\\p{So}$")
+    re = Rure("\\p{So}$")
     matched = re.is_match(haystack)
     if not matched:
         if DEBUG:
@@ -55,9 +55,9 @@ def test_shortest_match():
 
 def test_find():
     passed = True
-    haystack = u'snowman: \u2603'
+    haystack = "snowman: \xE2\x98\x83"
 
-    re = Rure(u"\\p{So}$")
+    re = Rure("\\p{So}$")
     match = re.find(haystack)
     if not match:
         if DEBUG:
@@ -82,9 +82,9 @@ def test_find():
 
 def test_captures():
     passed = True
-    haystack = u'snowman: \u2603'
+    haystack = "snowman: \xE2\x98\x83"
 
-    re = Rure(u".(.*(?P<snowman>\\p{So}))$")
+    re = Rure(".(.*(?P<snowman>\\p{So}))$")
     captures = re.captures(haystack)
     if not captures:
         if DEBUG:
@@ -217,7 +217,7 @@ def test_iter_capture_names():
 # (When Unicode mode is enabled, \xFF won't match .)
 def test_flags():
     passed = True
-    pattern = u"."
+    pattern = "."
     haystack = b"\xFF"
 
     re = Rure(pattern, flags=1)
